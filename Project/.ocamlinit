@@ -1,0 +1,10 @@
+#require "oUnit";;
+#require "yojson";;
+#require "ANSITerminal";;
+#directory "_build";;
+#require "str";;
+#load "command.cmo";;
+#load "game.cmo";;
+#load "interface.cmo";;
+#load "opponent.cmo";;
+#load "state.cmo";;
