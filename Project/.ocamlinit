@@ -8,3 +8,4 @@
 #load "interface.cmo";;
 #load "opponent.cmo";;
 #load "state.cmo";;
+#load "authors.cmo";;
