@@ -17,4 +17,9 @@ val get_piece : (int*int) -> t -> piece option
 type result = Legal of t | Illegal
 
 (* checks for piece at this location, sees if valid movement*)
-val is_valid_move : (int*int) -> (int*int) -> t -> result
+val is_valid_move : (int*int) -> (int*int) -> t -> bool
+
+(* enacts move for board *)
+val move : (int*int) -> (int*int) -> t -> result
+
+val win_condition : t -> bool

@@ -1,4 +1,4 @@
-MODULES=command game interface opponent state authors
+MODULES=command interface opponent state authors
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)
