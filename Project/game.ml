@@ -5,44 +5,38 @@ type move_t = U | F of int | FB of int
 type move = C | R (* column or row of either unbounded, positive,
                      or positive negative*)
 
-type piece_names =  Knight | Pawn | Bishop | Rook | Queen | King
+type piece_name =  Knight | Pawn | Bishop | Rook | Queen | King
 
+(*
 type piece_type = {
-  piece : piece_names;
+  piece : piece_name;
   points : int;
 }
+*)
 
 type piece = {
-  p : piece_type;
+  piece : piece_name;
+  points : int;
   loc : int*int;
   alive : bool;
   first_move : bool;
 }
 
 type t = {
-  piece_types : piece_type list;
+  piece_types : piece_name list;
   start_pieces : piece list;
   board_size : int;
 }
-
-let pawn = {
-  name = Pawn;
-  points = 3;
-  moves1 = [(1,0); (2,0)];
-  moves2 = [(1,0)];
-  first_move = true;
-}
-
-let pawn = {
-  
-}
-
+(*
 let moves p = 
   match p with
   | {Pawn,loc,alive,first_move} -> 
     if first_move then
       [(]
-
+*)
 
 let init_from_json json = {
+  piece_types = Knight::Pawn::Bishop::Rook::Queen::King::[];
+  start_pieces = []; (* read from json *)
+  board_size = 8;
 }

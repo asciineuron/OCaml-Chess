@@ -15,7 +15,8 @@ type t
 type move
 
 (** [moves p g] is the set-like list of moves of piece [p] in game [g]. *)
-val moves : piece -> t -> move list
+(*val moves : piece -> t -> move list*)
+(* move moves to state? *)
 
 val piece_names : t -> piece list
 
