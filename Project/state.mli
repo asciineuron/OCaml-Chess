@@ -9,7 +9,8 @@ type t
 
 type piece
 
-val init_state : Game.t -> t
+(* will have json for initial layout and loading a save *)
+val init_state : Yojson.Basic.t -> t
 
 val get_piece : (int*int) -> t -> piece option
 
