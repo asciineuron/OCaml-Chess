@@ -20,35 +20,38 @@ let rec get_new_game d od =
         get_new_game d od
     else get_new_game d od
   with e -> (Unix.closedir od); 
-    print_endline "There was no game initialization JSON in this directory."; 
+    print_endline "\nThere was no game initialization JSON in this directory.\n";
     raise End_of_file (** LMAO COULDNT THINK OF ANYTHING*)
 
 let rec check_directory directory = 
   try (
     let game = Unix.opendir directory in
-    print_endline "Please enter \"new game\" if you would like to play a new game."; 
+    print_endline "\nPlease enter \"new game\" if you would like to play a new game."; 
     print_endline "Enter \"load [game name]\" if you would like to load a previously";
-    print_endline "saved game under then name you saved it: for example, \"load game1\" \n";
+    print_endline "saved game under then name you saved it: for example, \"load game1\"\n";
     print_string  "> ";
     let s = (read_line ()) in   
     match s |> String.split_on_char ' ' |> List.filter (fun s -> s <> "") with
-    | "new"::"game"::[] -> (try (get_new_game directory game) with e ->      
-      match read_line () with
-      | directory -> check_directory directory)
-    | "load"::game_name::[] -> 
-      (try get_load_game directory game game_name with e ->
-         ANSITerminal.(
-           print_endline ("Invalid saved game entered. Re-enter a directory name.");
-           match read_line () with
-           | directory -> check_directory directory))
-    | _ -> ANSITerminal.(
-        print_endline ("Invalid command entered. Re-enter a directory name.");
+    | "new"::"game"::[] -> (try (get_new_game directory game) with e ->   
+        print_string "> ";    
         match read_line () with
         | directory -> check_directory directory)
-  ) with e -> ANSITerminal.(
-      print_endline ("Invalid directory entered. Re-enter a directory name.");
+    | "load"::game_name::[] -> 
+      (try get_load_game directory game game_name with e ->
+         print_endline ("\nInvalid saved game entered. Re-enter a directory name.\n");
+         print_string ("> ");
+         match read_line () with
+         | directory -> check_directory directory)
+    | _ -> 
+      print_endline ("\nInvalid command entered. Re-enter a directory name.\n");
+      print_string ("> ");
       match read_line () with
-      | file_name -> check_directory file_name)
+      | directory -> check_directory directory
+  ) with e ->
+    print_endline ("\nInvalid directory entered. Re-enter a directory name.\n");
+    print_string ("> ");
+    match read_line () with
+    | file_name -> check_directory file_name
 
 let rec play_the_rest state = 
   Interface.print_board state;

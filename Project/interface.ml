@@ -1,52 +1,70 @@
 open State
 
-let print_piece (piece : State.piece option) = 
+let print_piece (piece : State.piece option) (square_col : int)=
   match piece with 
-  | None -> print_endline "       |";
-    print_endline "       |";
-    print_endline "       |";
+  | None -> if (square_col mod 2 = 0) then (
+      print_endline "       |";
+      print_endline "       |";
+      print_endline "       |";)
+    else (
+      print_endline " . . . |";
+      print_endline " . . . |";
+      print_endline " . . . |";
+    )
   | Some piece -> begin match piece.piece with 
       | Pawn -> if (piece.color = White) then (
           print_endline "   _   |";
           print_endline "  ( )  |";
           print_endline "  /_\  |";)
         else (
-          print_endline " ";
+          print_endline "   _   |";
+          print_endline "  (@)  |";
+          print_endline "  /A\  |";
         )
       | Knight -> if (piece.color = White) then (
           print_endline "  /^)  |";
           print_endline "   )(  |";
           print_endline "  <__> |";)
         else (
-          print_endline " ";
+          print_endline "  /^)  |";
+          print_endline "   d(  |";
+          print_endline "  <@@> |";
         )
       | Bishop -> if (piece.color = White) then (
           print_endline "  .O.  |";
           print_endline "  \ /  |";
           print_endline "  /_\  |";)
         else (
-          print_endline " ";
+          print_endline "  .O.  |";
+          print_endline "  \\@/  |";
+          print_endline "  /A\  |";
         )
       | Rook -> if (piece.color = White) then (
           print_endline " [___] |";
           print_endline "  [ ]  |";
           print_endline " /___\ |";)
         else (
-          print_endline " ";
+          print_endline " [@@@] |";
+          print_endline "  [@]  |";
+          print_endline " /@@@\ |";
         )
       | Queen -> if (piece.color = White) then (
           print_endline " \\o^o/ |";
           print_endline "  [ ]  |";
           print_endline " /___\ |";)
         else (
-          print_endline " ";
+          print_endline " \\o^o/ |";
+          print_endline "  [@]  |";
+          print_endline " /@@@\ |";
         )
       | King -> if (piece.color = White) then (
           print_endline " __+__ |";
           print_endline " `. .' |";
           print_endline " /___\ |";)
         else (
-          print_endline " ";
+          print_endline " __+__ |";
+          print_endline " `d|b' |";
+          print_endline " /@@@\ |";
         )
       | Empty -> failwith "BadBadBadBadBadBad Pick Empty or None not both!!!!!"
     end
@@ -60,7 +78,7 @@ let print_board game =
     for j=0 to 7 do
       let pos = (i,j) in 
       print_string " -------";
-      print_piece (State.get_piece pos game);
+      print_piece (State.get_piece pos game) (i+j);
       print_string " -------";
     done
   done
