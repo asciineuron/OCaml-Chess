@@ -68,6 +68,8 @@ let within_bounds onto game =
   snd onto < game.board_size && snd onto >= game.board_size &&
   fst onto < game.board_size && fst onto >= game.board_size
 
+
+(* PAWN MOVES DIAGONAL TO CAPTURE *)
 let is_valid_move from onto game =
   (snd onto <> 0 && fst onto <> 0) &&
   (within_bounds onto game) &&
