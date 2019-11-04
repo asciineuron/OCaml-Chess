@@ -24,6 +24,9 @@ let get_piece pos game =
   | exception (Not_found) -> None
   | a -> Some a
 
+let get_board_size game = 
+  game.board_size
+
 type result = Legal of t | Illegal
 
 let points_of_piece piece_name = 
@@ -34,7 +37,7 @@ let points_of_piece piece_name =
   | Rook -> 5
   | Queen -> 9
   | King -> 10
-  | _ -> 0
+  | Empty -> 0
 
 let piece_of_json json = {
   piece = begin

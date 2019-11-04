@@ -16,4 +16,8 @@ exception Empty
 
 exception Malformed
 
+<<<<<<< HEAD
 val parse : string -> command
+=======
+val parse : string -> State.t -> command
+>>>>>>> 86d0d04e925b1d5d0e2981491823b0e059f2093f
