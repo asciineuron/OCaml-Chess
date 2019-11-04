@@ -8,12 +8,12 @@ type command =
   | Move of (obj * location * location)
   | Quit
   | Save
-  | NewGame
-  | Load of game
+  (* | NewGame *)
+  (* | Load of game *)
   | Replace of (obj*obj)
 
 exception Empty
 
 exception Malformed
 
-val parse : string -> command
+val parse : string -> State.t -> command

@@ -5,9 +5,24 @@
    loading from JSON
 *)
 
-type t
+exception IllegalPosition
 
-type piece
+type piece_name =  Knight | Pawn | Bishop | Rook | Queen | King | Empty
+type color = Black | White
+
+(* NOTE: moves given "e5" thus loc = col*row !!*)
+type piece = {
+  piece : piece_name;
+  color : color;
+  loc : int*int;
+  alive : bool;
+  first_move : bool;
+}
+
+type t = {
+  board : piece list;
+  board_size : int;
+}
 
 (* will have json for initial layout and loading a save *)
 val init_state : Yojson.Basic.t -> t
@@ -23,3 +38,5 @@ val is_valid_move : (int*int) -> (int*int) -> t -> bool
 val move : (int*int) -> (int*int) -> t -> result
 
 val win_condition : t -> bool
+
+val get_board_size : t -> int
