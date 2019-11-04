@@ -14,6 +14,6 @@ type command =
 
 exception Empty
 
-exception Malformed
+exception Malformed of string
 
 val parse : string -> State.t -> command
