@@ -13,8 +13,9 @@ let rec get_load_game d od game_name =
 let rec get_new_game d od = 
   try
     let file = Unix.readdir od in 
-    if file = "new_game.json" then
-      State.init_state (Yojson.Basic.from_file (d^Filename.dir_sep^file))
+    if file = "new_game.json" then (
+      print_endline "yay";
+      State.init_state (Yojson.Basic.from_file (d^Filename.dir_sep^file)))
     else get_new_game d od
   with e -> (Unix.closedir od); 
     print_endline "There was no game initialization JSON in this directory."; 
