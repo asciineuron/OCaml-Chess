@@ -68,8 +68,8 @@ let init_state json = {
 }
 
 let within_bounds onto game =
-  snd onto < game.board_size && snd onto >= game.board_size &&
-  fst onto < game.board_size && fst onto >= game.board_size
+  snd onto < game.board_size && snd onto >= 0 &&
+  fst onto < game.board_size && fst onto >= 0
 
 
 (* PAWN MOVES DIAGONAL TO CAPTURE *)
@@ -168,7 +168,7 @@ let move from onto game =
                 |> List.map (fun p -> if p.loc = from && p.alive then
                                 {p with loc = onto} else p)
       })
-  else (print_endline "illegal move"; Illegal)
+  else Illegal
 
 let win_condition game =
   (List.filter (fun p -> p.piece = King) game.board) |> List.length = 1 
