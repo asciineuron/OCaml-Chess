@@ -1,6 +1,6 @@
 open State
 
-let print_piece (piece : State.piece option) =
+let print_piece (piece : State.piece option) = 
   match piece with 
   | None -> print_endline "       |";
     print_endline "       |";
