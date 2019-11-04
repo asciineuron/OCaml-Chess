@@ -8,8 +8,7 @@ let rec get_load_game d od game_name =
       State.init_state (Yojson.Basic.from_file (d^Filename.dir_sep^file))
     else get_load_game d od game_name
   with e -> (Unix.closedir od); 
-    print_endline "There was no game of that name in this directory"; 
-    exit 0 
+    raise End_of_file (** LMAO COULDNT THINK OF ANYTHING*)
 
 let rec get_new_game d od = 
   try
@@ -18,8 +17,8 @@ let rec get_new_game d od =
       State.init_state (Yojson.Basic.from_file (d^Filename.dir_sep^file))
     else get_new_game d od
   with e -> (Unix.closedir od); 
-    print_endline "There was no game initialization JSON in this directory"; 
-    exit 0 
+    print_endline "There was no game initialization JSON in this directory."; 
+    raise End_of_file (** LMAO COULDNT THINK OF ANYTHING*)
 
 let rec check_directory directory = 
   try (
@@ -28,39 +27,36 @@ let rec check_directory directory =
     print_endline "Enter \"load [game name]\" if you would like to load a previously";
     print_endline "saved game under then name you saved it: for example, \"load game1\" \n";
     print_string  "> ";
-    match (read_line ()) |> String.split_on_char ' ' |> List.filter (fun s -> s <> "") with
-    | "new"::"game"::[] -> get_new_game directory game
-    | "load"::game_name::[] -> (try (
-        get_load_game directory game game_name
-      ) with e -> ( 
-          ANSITerminal.(
-            print_endline ("Invalid Saved Game Entered. Re-enter a command.");
-            match read_line () with
-            | directory -> check_directory directory
-          )
-        )
+    let s = (read_line ()) in 
+    match s |> String.split_on_char ' ' |> List.filter (fun s -> s <> "") with
+    | "new"::"game"::[] -> (try (get_new_game directory game) with e ->      
+      match read_line () with
+      | directory -> check_directory directory
+      )
+    | "load"::game_name::[] -> 
+      (try get_load_game directory game game_name with e ->
+         ANSITerminal.(
+           print_endline ("Invalid saved game entered. Re-enter a directory name.");
+           match read_line () with
+           | directory -> check_directory directory
+         )
       )
     | _ -> ANSITerminal.(
-        print_endline ("Invalid Command Entered. Re-enter a command");
+        print_endline ("Invalid command entered. Re-enter a directory name.");
         match read_line () with
         | directory -> check_directory directory
       )
-  ) with e -> (
-      ANSITerminal.(
-        print_endline ("Invalid Directory entered. Re-enter a directory name.");
-        match read_line () with
-        | file_name -> check_directory file_name
-      )
-    )
+  ) with e -> ANSITerminal.(
+      print_endline ("Invalid directory entered. Re-enter a directory name.");
+      match read_line () with
+      | file_name -> check_directory file_name)
 
-let play_the_rest state = 
+let rec play_the_rest state = 
   failwith "Unimplemented"
 
 let play_game directory = 
   let start = check_directory directory in 
   play_the_rest start
-
-
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
@@ -76,3 +72,5 @@ let main () =
 
 (* Execute the game engine. *)
 let () = main ()
+
+(** All this code was Atul Ganju read it and weep*)
