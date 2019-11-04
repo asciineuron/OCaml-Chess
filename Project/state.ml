@@ -168,7 +168,7 @@ let move from onto game =
                 |> List.map (fun p -> if p.loc = from && p.alive then
                                 {p with loc = onto} else p)
       })
-  else Illegal
+  else (print_endline "illegal move"; Illegal)
 
 let win_condition game =
   (List.filter (fun p -> p.piece = King) game.board) |> List.length = 1 

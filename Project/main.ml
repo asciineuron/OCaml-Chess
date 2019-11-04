@@ -65,7 +65,7 @@ let rec play_the_rest state =
         play_the_rest state;
       | State.Legal(s) -> play_the_rest s
     end
-  | Quit -> ();
+  | Quit -> Stdlib.exit 0
   | _ -> play_the_rest state
 
 
