@@ -47,6 +47,6 @@ let parse string game =
      | "load"::_ -> raise (Malformed "you did not enter a valid command") *)
   | "replace"::obj1::obj2::[] -> Replace (obj1,obj2)
   | "replace"::_ -> raise (Malformed  "you did not enter a valid command")
-  | "move"::obj::loc1::loc2::[] -> 
+  | "move"::obj::loc1::"to"::loc2::[] -> 
     Move (obj, coordinate (explode loc1) game, coordinate (explode loc2) game)
   | _ -> raise (Malformed "you did not enter a valid command")
