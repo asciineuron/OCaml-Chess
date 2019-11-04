@@ -1,3 +1,4 @@
+open State
 
 let print_piece piece =
   match piece with 
