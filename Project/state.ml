@@ -41,7 +41,7 @@ let points_of_piece piece_name =
 
 let piece_of_json json = {
   piece = begin
-    match json |> member "piece" |> to_string with
+    match (json |> member "piece" |> to_string) with
     | "pawn" -> Pawn
     | "knight" -> Knight
     | "bishop" -> Bishop
@@ -56,7 +56,7 @@ let piece_of_json json = {
     | "White" -> White
     | _ -> White (* bad *)
   end;
-  loc = (json |> member "col" |> to_int),(json |> member "row" |> to_int);
+  loc = ((json |> member "col" |> to_int),(json |> member "row" |> to_int));
   alive = true;
   first_move = true;
 

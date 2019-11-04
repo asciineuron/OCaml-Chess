@@ -14,7 +14,10 @@ let rec get_new_game d od =
   try
     let file = Unix.readdir od in 
     if file = "new_game.json" then
-      State.init_state (Yojson.Basic.from_file (d^Filename.dir_sep^file))
+      try
+        State.init_state (Yojson.Basic.from_file (d^Filename.dir_sep^file))
+      with exep -> print_endline "error initializing";
+        get_new_game d od
     else get_new_game d od
   with e -> (Unix.closedir od); 
     print_endline "There was no game initialization JSON in this directory."; 
@@ -48,11 +51,23 @@ let rec check_directory directory =
       | file_name -> check_directory file_name)
 
 let rec play_the_rest state = 
-  failwith "Unimplemented"
+  Interface.print_board state;
+  print_endline "Please enter a command";
+  let input = Stdlib.read_line() in
+  match (Command.parse input state) with
+  | Move(obj,c1,c2) -> begin
+      match (State.move c1 c2 state) with
+      | State.Illegal ->
+        Stdlib.print_endline "Illegal Move!";
+        play_the_rest state;
+      | State.Legal(s) -> play_the_rest s
+    end
+  | _ -> play_the_rest state;
 
-let play_game directory = 
-  let start = check_directory directory in 
-  play_the_rest start
+
+    let play_game directory = 
+      let start = check_directory directory in 
+      play_the_rest start
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
