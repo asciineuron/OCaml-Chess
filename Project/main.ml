@@ -27,25 +27,21 @@ let rec check_directory directory =
     print_endline "Enter \"load [game name]\" if you would like to load a previously";
     print_endline "saved game under then name you saved it: for example, \"load game1\" \n";
     print_string  "> ";
-    let s = (read_line ()) in 
+    let s = (read_line ()) in   
     match s |> String.split_on_char ' ' |> List.filter (fun s -> s <> "") with
     | "new"::"game"::[] -> (try (get_new_game directory game) with e ->      
       match read_line () with
-      | directory -> check_directory directory
-      )
+      | directory -> check_directory directory)
     | "load"::game_name::[] -> 
       (try get_load_game directory game game_name with e ->
          ANSITerminal.(
            print_endline ("Invalid saved game entered. Re-enter a directory name.");
            match read_line () with
-           | directory -> check_directory directory
-         )
-      )
+           | directory -> check_directory directory))
     | _ -> ANSITerminal.(
         print_endline ("Invalid command entered. Re-enter a directory name.");
         match read_line () with
-        | directory -> check_directory directory
-      )
+        | directory -> check_directory directory)
   ) with e -> ANSITerminal.(
       print_endline ("Invalid directory entered. Re-enter a directory name.");
       match read_line () with

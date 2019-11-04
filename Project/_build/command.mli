@@ -8,13 +8,13 @@ type command =
   | Move of (obj * location * location)
   | Quit
   | Save
-  | NewGame
-  | Load of game
+  (* | NewGame *)
+  (* | Load of game *)
   | Replace of (obj*obj)
 
 exception Empty
 
-exception Malformed
+exception Malformed of string
 
 <<<<<<< HEAD
 val parse : string -> command

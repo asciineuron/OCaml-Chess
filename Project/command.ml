@@ -10,7 +10,7 @@ type command =
   | Move of (obj * location * location)
   | Quit
   | Save
-  | NewGame
+  (* | NewGame *)
   (* | Load of game *)
   | Replace of (obj*obj)
 
@@ -41,8 +41,8 @@ let parse string game =
   | "quit"::_ -> raise (Malformed "you did not enter a valid command")
   | "save"::[] -> Save
   | "save"::_ -> raise (Malformed "you did not enter a valid command")
-  | "new"::"game"::[] -> NewGame
-  | "new"::"game"::_ -> raise (Malformed "you did not enter a valid command")
+  (* | "new"::"game"::[] -> NewGame
+     | "new"::"game"::_ -> raise (Malformed "you did not enter a valid command") *)
   (* | "load"::json_file::[] -> Load json_file
      | "load"::_ -> raise (Malformed "you did not enter a valid command") *)
   | "replace"::obj1::obj2::[] -> Replace (obj1,obj2)
