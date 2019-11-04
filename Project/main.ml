@@ -65,12 +65,13 @@ let rec play_the_rest state =
         play_the_rest state;
       | State.Legal(s) -> play_the_rest s
     end
-  | _ -> play_the_rest state;
+  | Quit -> ();
+  | _ -> play_the_rest state
 
 
-    let play_game directory = 
-      let start = check_directory directory in 
-      play_the_rest start
+let play_game directory = 
+  let start = check_directory directory in 
+  play_the_rest start
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =

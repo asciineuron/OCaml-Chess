@@ -6,4 +6,6 @@ open State
   to be played to completion*)
 val play_game : string -> unit
 
+val play_the_rest : State.t -> unit
+
 val main : unit -> unit

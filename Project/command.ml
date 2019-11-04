@@ -26,11 +26,11 @@ let coordinate lst game =
   | char::number::[] -> 
     let ascii_char = Char.code char in 
     let ascii_number = Char.code number in 
-    if (97 <= ascii_char && ascii_char >= 122) then 
+    if (97 <= ascii_char && ascii_char <= 122) then 
       if (Char.code number <= (State.get_board_size game)) then 
         (ascii_char - 97, ascii_number - 1) 
-      else raise (Malformed "you did not enter a valid move")
-    else raise (Malformed "you did not enter a valid move")
+      else raise (Malformed "entered move outside of range")
+    else raise (Malformed "not proper char")
   | _ -> raise (Malformed "you did not enter a valid move")
 
 let parse string game =
