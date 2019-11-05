@@ -105,7 +105,7 @@ let print_first_line game i =
   let board_size = State.get_board_size game in 
   for j = 0 to (board_size - 1) do 
     let string =
-      match State.get_piece (i, j) game with
+      match State.get_piece (j, i) game with
       | None -> if (((i+j) mod 2) = 0) then "       " else " . . . "
       | Some piece -> begin 
           match piece.piece with
@@ -126,7 +126,7 @@ let print_second_line game i =
   let board_size = State.get_board_size game in 
   for j = 0 to (board_size - 1) do 
     let string =
-      match State.get_piece (i, j) game with
+      match State.get_piece (j, i) game with
       | None -> if (((i+j) mod 2) = 0) then "       " else " . . . "
       | Some piece -> begin 
           match piece.piece with
@@ -147,7 +147,7 @@ let print_third_line game i =
   let board_size = State.get_board_size game in 
   for j = 0 to (board_size - 1) do 
     let string =
-      match State.get_piece (i, j) game with
+      match State.get_piece (j, i) game with
       | None -> if (((i+j) mod 2) = 0) then "       " else " . . . "
       | Some piece -> begin 
           match piece.piece with

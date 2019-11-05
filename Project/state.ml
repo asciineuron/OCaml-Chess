@@ -56,7 +56,7 @@ let piece_of_json json = {
     | "white" -> White
     | _ -> White (* bad *)
   end;
-  loc = ((json |> member "row" |> to_int),(json |> member "col" |> to_int));
+  loc = ((json |> member "col" |> to_int),(json |> member "row" |> to_int));
   alive = true;
   first_move = true;
 
