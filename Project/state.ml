@@ -68,8 +68,8 @@ let init_state json = {
 }
 
 let within_bounds onto game =
-  snd onto < game.board_size && snd onto >= game.board_size &&
-  fst onto < game.board_size && fst onto >= game.board_size
+  snd onto < game.board_size && snd onto >= 0 &&
+  fst onto < game.board_size && fst onto >= 0
 
 
 (* PAWN MOVES DIAGONAL TO CAPTURE *)
