@@ -133,7 +133,7 @@ let print_second_line game i =
           | Pawn -> if (piece.color = White) then "  ( )  " else "  (@)  "
           | Rook -> if (piece.color = White) then "  [ ]  " else "  [@]  "
           | Knight -> if (piece.color = White) then "   )(  " else "   d(  "
-          | Bishop -> if (piece.color = White) then "  \\ /  " else "  \\\\@/  "
+          | Bishop -> if (piece.color = White) then "  \\ /  " else "  \\@/  "
           | Queen -> if (piece.color = White) then "  [ ]  " else "  [@]  "
           | King -> if (piece.color = White) then " `. .' " else " `d|b' "
           | Empty -> "BADBADBADBADBADBADBADBADBADBAD"
