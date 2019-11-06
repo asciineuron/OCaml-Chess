@@ -59,7 +59,7 @@ let rec play_the_rest state =
   let input = Stdlib.read_line() in
   match (Command.parse input state) with
   | Move(obj,c1,c2) -> begin
-      match (State.move c1 c2 state) with
+      match (State.move obj c1 c2 state) with
       | State.Illegal ->
         Stdlib.print_endline "Illegal Move!";
         play_the_rest state;

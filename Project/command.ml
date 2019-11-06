@@ -37,15 +37,15 @@ let parse string game =
   let s = String.lowercase_ascii string in
   match s |> String.split_on_char ' ' |> List.filter (fun s -> s <> "") with
   | [] -> raise Empty
-  | "quit"::[] -> Quit
+  | "quit"::"game"::[] -> Quit
   | "quit"::_ -> raise (Malformed "you did not enter a valid command")
-  | "save"::[] -> Save
+  | "save"::"game"::[] -> Save
   | "save"::_ -> raise (Malformed "you did not enter a valid command")
   (* | "new"::"game"::[] -> NewGame
      | "new"::"game"::_ -> raise (Malformed "you did not enter a valid command") *)
   (* | "load"::json_file::[] -> Load json_file
      | "load"::_ -> raise (Malformed "you did not enter a valid command") *)
-  | "replace"::obj1::obj2::[] -> Replace (obj1,obj2)
+  | "replace"::obj1::"with"::obj2::[] -> Replace (obj1,obj2)
   | "replace"::_ -> raise (Malformed  "you did not enter a valid command")
   | "move"::obj::"from"::loc1::"to"::loc2::[] -> 
     Move (obj, coordinate (explode loc1) game, coordinate (explode loc2) game)

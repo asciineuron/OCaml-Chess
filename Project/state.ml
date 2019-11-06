@@ -72,13 +72,13 @@ let within_bounds onto game =
   fst onto < game.board_size && fst onto >= 0
 
 
-(* PAWN MOVES DIAGONAL TO CAPTURE *)
-let is_valid_move from onto game =
-  (snd onto <> 0 && fst onto <> 0) &&
-  (within_bounds onto game) &&
-  match get_piece from game with
-  | None -> false
-  | Some a -> begin
+(* PAWN MOVES DIAGONAL TO CAPTURE
+   let is_valid_move from onto game =
+   (snd onto <> 0 && fst onto <> 0) &&
+   (within_bounds onto game) &&
+   match get_piece from game with
+   | None -> false
+   | Some a -> begin
       match a with
       | {piece = Pawn;color;loc;alive;first_move} -> 
         begin  
@@ -155,16 +155,46 @@ let is_valid_move from onto game =
           | None -> true
         end
       | _ -> false
-    end
+    end *)
 
-let move from onto game =
-  if is_valid_move from onto game then 
+let move_check_white moves from onto = 
+  let delta_x = (fst onto) - (fst from) in
+  let new_moves = List.filter (fun elt -> (fst elt) = delta_x) moves in
+  let delta_y = (snd onto) - (snd from) in
+  match List.filter (fun elt -> (snd elt) = delta_y) new_moves with
+  | [] -> false
+  | h::[] -> true
+  | h::t -> print_endline "\n You did not give it a valid JSON file"; exit 0
+
+let move_check_black moves from onto = 
+  let delta_x = (fst onto) - (fst from) in
+  let new_moves = List.filter (fun elt -> -(fst elt) = delta_x) moves in
+  let delta_y = (snd onto) - (snd from) in
+  match List.filter (fun elt -> -(snd elt) = delta_y) new_moves with
+  | [] -> false
+  | h::[] -> true
+  | h::t -> print_endline "\n You did not give it a valid JSON file"; exit 0
+
+
+let is_valid_move obj from onto game = 
+  if ((get_piece from game) = obj && (get_piece onto game) = None) then 
+    match obj with
+    | None -> false (*Never going to happen *)
+    | Some piece -> begin
+        match piece.color with
+        | White -> move_check_white piece.moves from onto
+        | Black -> move_check_black piece.moves from onto
+      end
+  else false
+
+
+
+let move obj from onto game =
+  if is_valid_move obj from onto game then 
     Legal(
       {
         game with
         board = (game.board) 
-                |> List.map (fun p -> if p.loc = onto then
-                                {p with alive=false} else p)
                 |> List.map (fun p -> if p.loc = from && p.alive then
                                 {p with loc = onto} else p)
       })
