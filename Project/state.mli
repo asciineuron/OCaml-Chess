@@ -15,6 +15,7 @@ type piece = {
   piece : piece_name;
   color : color;
   loc : int*int;
+  moves : (int*int) list;
   alive : bool;
   first_move : bool;
 }
@@ -32,11 +33,13 @@ val get_piece : (int*int) -> t -> piece option
 type result = Legal of t | Illegal
 
 (* checks for piece at this location, sees if valid movement*)
-val is_valid_move : (int*int) -> (int*int) -> t -> bool
+val is_valid_move : string -> (int*int) -> (int*int) -> t -> bool
 
 (* enacts move for board *)
-val move : (int*int) -> (int*int) -> t -> result
+val move : string -> (int*int) -> (int*int) -> t -> result
 
 val win_condition : t -> bool
 
 val get_board_size : t -> int
+
+val kind_of_piece : piece option -> piece_name

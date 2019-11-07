@@ -10,6 +10,7 @@ type piece = {
   piece : piece_name;
   color : color;
   loc : int*int;
+  moves : (int*int) list;
   alive : bool;
   first_move : bool;
 }
@@ -57,9 +58,10 @@ let piece_of_json json = {
     | _ -> White (* bad *)
   end;
   loc = ((json |> member "col" |> to_int),(json |> member "row" |> to_int));
+  moves = (json |> member "moves" |> to_list |> 
+           List.map (fun json -> (json |> member "x" |> to_int),(json |> member "y" |> to_int)));
   alive = true;
   first_move = true;
-
 }
 
 let init_state json = {
@@ -70,7 +72,6 @@ let init_state json = {
 let within_bounds onto game =
   snd onto < game.board_size && snd onto >= 0 &&
   fst onto < game.board_size && fst onto >= 0
-
 
 (* PAWN MOVES DIAGONAL TO CAPTURE
    let is_valid_move from onto game =
@@ -157,11 +158,30 @@ let within_bounds onto game =
       | _ -> false
     end *)
 
+let kind_of_piece piece_option = 
+  match piece_option with
+  | None -> failwith "this cant happen"
+  | Some piece -> piece.piece
+
+let string_to_piece string = 
+  match string with
+  | "pawn" -> Pawn
+  | "knight" -> Knight
+  | "bishop" -> Bishop
+  | "rook" -> Rook
+  | "queen" -> Queen
+  | "king" -> King
+  | _ -> Empty (* bad *)
+
+(* let print_tuples lst = 
+   List.iter (fun x -> print_string ("("^(string_of_int (fst x)^","^(string_of_int(snd x))^") "))) lst *)
+
 let move_check_white moves from onto = 
   let delta_x = (fst onto) - (fst from) in
-  let new_moves = List.filter (fun elt -> (fst elt) = delta_x) moves in
-  let delta_y = (snd onto) - (snd from) in
-  match List.filter (fun elt -> (snd elt) = delta_y) new_moves with
+  let new_moves = List.filter (fun elt -> (fst elt) = delta_x) moves in 
+  let delta_y = (snd from) - (snd onto) in
+  let newer_moves = List.filter (fun elt -> (snd elt) = delta_y) new_moves in
+  match newer_moves with
   | [] -> false
   | h::[] -> true
   | h::t -> print_endline "\n You did not give it a valid JSON file"; exit 0
@@ -170,24 +190,23 @@ let move_check_black moves from onto =
   let delta_x = (fst onto) - (fst from) in
   let new_moves = List.filter (fun elt -> -(fst elt) = delta_x) moves in
   let delta_y = (snd onto) - (snd from) in
-  match List.filter (fun elt -> -(snd elt) = delta_y) new_moves with
+  match List.filter (fun elt -> (snd elt) = delta_y) new_moves with
   | [] -> false
   | h::[] -> true
   | h::t -> print_endline "\n You did not give it a valid JSON file"; exit 0
 
 
 let is_valid_move obj from onto game = 
-  if ((get_piece from game) = obj && (get_piece onto game) = None) then 
-    match obj with
-    | None -> false (*Never going to happen *)
+  let from_piece = (get_piece from game) in
+  if (kind_of_piece (from_piece) = (string_to_piece obj) && (get_piece onto game) = None) then 
+    match from_piece with
+    | None -> false (*Never going to happen *) 
     | Some piece -> begin
         match piece.color with
         | White -> move_check_white piece.moves from onto
         | Black -> move_check_black piece.moves from onto
       end
   else false
-
-
 
 let move obj from onto game =
   if is_valid_move obj from onto game then 

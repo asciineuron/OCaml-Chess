@@ -28,7 +28,7 @@ let coordinate lst game =
     let ascii_number = Char.code number in 
     if (97 <= ascii_char && ascii_char <= 122) then 
       if ((Char.code number - (Char.code '0')) <= (State.get_board_size game)) then 
-        (ascii_char - 97, ascii_number - 1) 
+        (ascii_char - 97, ascii_number - 49) 
       else raise (Malformed "entered move outside of range")
     else raise (Malformed "not proper char")
   | _ -> raise (Malformed "you did not enter a valid move")
