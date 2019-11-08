@@ -40,6 +40,9 @@ let points_of_piece piece_name =
   | King -> 10
   | Empty -> 0
 
+let moves_of_json json = 
+  ((json |> member "x" |> to_int), (json |> member "y" |> to_int))
+
 let piece_of_json json = {
   piece = begin
     match (json |> member "piece" |> to_string) with
@@ -58,8 +61,7 @@ let piece_of_json json = {
     | _ -> White (* bad *)
   end;
   loc = ((json |> member "col" |> to_int),(json |> member "row" |> to_int));
-  moves = (json |> member "moves" |> to_list |> 
-           List.map (fun json -> (json |> member "x" |> to_int),(json |> member "y" |> to_int)));
+  moves = (json |> member "moves" |> to_list |> List.map moves_of_json);
   alive = true;
   first_move = true;
 }
