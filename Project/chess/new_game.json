@@ -1309,7 +1309,7 @@
       "color": "white",
       "col": 3,
       "row": 7,
-      "move": [
+      "moves": [
         {
           "x": 1,
           "y": 0
