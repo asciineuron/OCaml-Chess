@@ -1,0 +1,6 @@
+1. Go to directory and unzip folder with command 
+  "$ unzip chessQuestionMark.zip" then "$ unzip chessQuestionMark.zip"
+2. Navigate to "Project"
+3. Run "make play" command
+4. Enter "chess" as game you would like to play
+5. Enter "new game" to load a new game
