@@ -75,6 +75,33 @@ let init_state json = {
   board_size = json |> member "size" |> to_int;
 }
 
+let piece_to_string p =
+  match p.piece with
+  | Pawn -> "pawn"
+  | Knight -> "knight"
+  | Bishop -> "bishop"
+  | Rook -> "rook"
+  | Queen -> "queen"
+  | King -> "king"
+
+let piece_type_to_string ptype =
+  match ptype with
+  | Pawn -> "pawn"
+  | Knight -> "knight"
+  | Bishop -> "bishop"
+  | Rook -> "rook"
+  | Queen -> "queen"
+  | King -> "king"
+
+let add_piece_of_json piece loc color json = {
+  piece = piece;
+  color = color;
+  loc = loc;
+  first_move = true;
+  moves = (List.find (fun json -> to_string (member "piece" json) = (piece_type_to_string piece)) 
+             (json |> member "layout" |> to_list)) |> member "moves" |> to_list |> List.map moves_of_json
+}
+
 
 let string_to_piece string = 
   match string with
@@ -85,15 +112,6 @@ let string_to_piece string =
   | "queen" -> Queen
   | "king" -> King
   | _ -> failwith "This is not a valid piece"
-
-let piece_to_string p =
-  match p.piece with
-  | Pawn -> "pawn"
-  | Knight -> "knight"
-  | Bishop -> "bishop"
-  | Rook -> "rook"
-  | Queen -> "queen"
-  | King -> "king"
 
 let piece_color_to_string p =
   match p.color with
@@ -148,6 +166,7 @@ let move_check_black moves from onto =
 
 
 let is_valid_move obj from onto game color = 
+  (* checking color of selected piece matches game turn *)
   let from_piece = (get_piece from game) in
   if 
     match from_piece with
