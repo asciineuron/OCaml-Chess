@@ -1,0 +1,53 @@
+{
+  "type": "object",
+  "properties": {
+    "layout": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "piece": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "col": {
+            "type": "integer"
+          },
+          "row": {
+            "type": "integer"
+          },
+          "moves": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "integer"
+                },
+                "y": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "x",
+                "y"
+              ]
+            }
+          }
+        },
+        "required": [
+          "piece",
+          "color",
+          "col",
+          "row",
+          "moves"
+        ]
+      }
+    }
+  },
+  "required": [
+    "layout"
+  ]
+}
