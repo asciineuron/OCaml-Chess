@@ -84,7 +84,6 @@ let init_state json = {
   board_size = json |> member "size" |> to_int;
 }
 
-
 let string_to_piece string = 
   match string with
   | "pawn" -> Pawn
@@ -185,9 +184,14 @@ let move obj from onto game color =
       })
   else Illegal
 
-let is_valid_take obj1 obj2 from onto game = 
+let is_valid_take obj1 obj2 from onto game color = 
   let from_piece = (get_piece from game) in
   let onto_piece = (get_piece onto game) in 
+  if match from_piece, onto_piece with
+    | Some a, Some b -> a.color <> color || b.color = color
+    | _ -> false
+  then false
+  else
   if (kind_of_piece from_piece = string_to_piece obj1 &&
       kind_of_piece onto_piece = string_to_piece obj2 &&
       (get_piece onto game) != None) then 
@@ -204,8 +208,8 @@ let is_valid_take obj1 obj2 from onto game =
       end
   else false
 
-let take obj1 obj2 from onto game = 
-  if is_valid_take obj1 obj2 from onto game then 
+let take obj1 obj2 from onto game color = 
+  if is_valid_take obj1 obj2 from onto game color then 
     Legal(
       {
         game with

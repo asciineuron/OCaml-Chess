@@ -44,7 +44,7 @@ type result = Legal of t | Illegal
 val is_valid_move : obj -> location -> location -> t -> color -> bool
 
 (* enacts move for board *)
-val take : obj -> obj -> location -> location -> t -> result
+val take : obj -> obj -> location -> location -> t -> color -> result
 
 val move : obj -> location -> location -> t -> color -> result
 

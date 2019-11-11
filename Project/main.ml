@@ -76,7 +76,7 @@ let rec play_the_rest state color (directory:string) =
     end
   | Quit -> Stdlib.exit 0
   | Take (obj1, obj2, c1, c2) -> begin
-      match (State.take obj1 obj2 c1 c2 state) with
+      match (State.take obj1 obj2 c1 c2 state color) with
       | State.Illegal ->
         Stdlib.print_endline "Illegal Move!";
         play_the_rest state color directory;
