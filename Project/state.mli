@@ -41,12 +41,12 @@ val get_piece : location -> t -> piece option
 type result = Legal of t | Illegal
 
 (* checks for piece at this location, sees if valid movement*)
-val is_valid_move : obj -> location -> location -> t -> bool
+val is_valid_move : obj -> location -> location -> t -> color -> bool
 
 (* enacts move for board *)
 val take : obj -> obj -> location -> location -> t -> result
 
-val move : obj -> location -> location -> t -> result
+val move : obj -> location -> location -> t -> color -> result
 
 val win_condition : t -> bool
 
@@ -54,4 +54,8 @@ val get_board_size : t -> int
 
 val kind_of_piece : piece option -> piece_name
 
+val json_of_piece : piece -> string
+
 val json_of_board : t -> string
+
+val piece_color_to_string : piece -> string

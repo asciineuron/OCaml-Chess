@@ -57,36 +57,41 @@ let rec check_directory directory =
     match read_line () with
     | file_name -> check_directory file_name
 
-let rec play_the_rest state directory = 
+
+let other_color c =
+  match c with
+  | State.Black -> State.White
+  | State.White -> State.Black
+
+let rec play_the_rest state color (directory:string) = 
   Interface.print_board state;
-  print_endline "Please enter a command";
-  let input = Stdlib.read_line() in
-  match (Command.parse input state) with
-  | Move(obj,c1,c2) -> begin
-      match (State.move obj c1 c2 state) with
+  let turn = HumPlayer.turn state color in
+  match (Command.parse turn state) with
+  | Move(obj,c1, c2) -> begin
+      match (State.move obj c1 c2 state color) with
       | State.Illegal ->
         Stdlib.print_endline "Illegal Move!";
-        play_the_rest state directory;
-      | State.Legal(s) -> play_the_rest s directory
+        play_the_rest state color directory;
+      | State.Legal(s) -> play_the_rest s (other_color color) directory
     end
   | Quit -> Stdlib.exit 0
   | Take (obj1, obj2, c1, c2) -> begin
       match (State.take obj1 obj2 c1 c2 state) with
       | State.Illegal ->
         Stdlib.print_endline "Illegal Move!";
-        play_the_rest state directory;
-      | State.Legal(s) -> play_the_rest s directory end
+        play_the_rest state color directory;
+      | State.Legal(s) -> play_the_rest s (other_color color) directory end
   | exception e -> Stdlib.print_endline "Illegal Command!";
   | Save -> 
     Stdlib.print_endline "enter save file name: ";
     let file = read_line() in
     save_game file state directory
-  | _ -> play_the_rest state directory
+  | _ -> play_the_rest state color directory
 
 
 let play_game directory = 
   let start = check_directory directory in 
-  play_the_rest start directory
+  play_the_rest start (State.White) directory
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
