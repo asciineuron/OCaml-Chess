@@ -147,8 +147,14 @@ let move_check_black moves from onto =
   | h::t -> print_endline "\n You did not give it a valid JSON file"; exit 0
 
 
-let is_valid_move obj from onto game = 
+let is_valid_move obj from onto game color = 
   let from_piece = (get_piece from game) in
+  if 
+    match from_piece with
+    | Some a -> a.color <> color
+    | None -> false
+  then false
+  else
   if (kind_of_piece (from_piece) = (string_to_piece obj) && (get_piece onto game) = None) then 
     match from_piece with
     | None -> false (*Never going to happen *) 
@@ -159,8 +165,8 @@ let is_valid_move obj from onto game =
       end
   else false
 
-let move obj from onto game =
-  if is_valid_move obj from onto game then 
+let move obj from onto game color =
+  if is_valid_move obj from onto game color then 
     Legal(
       {
         game with
