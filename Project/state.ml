@@ -222,5 +222,19 @@ let take obj1 obj2 from onto game =
       })
   else Illegal
 
+(* let is_valid_replace from game =
+   let from_piece = (get_piece from game) in
+   if (from = (1,1) && (kind_of_piece from_piece = Pawn)) then 
+
+    print_endline "What piece would you like to replace the pawn with?";
+    print_string  "> ";
+    let s = string_to_piece (read_line ()) in
+    match from_piece with
+    | None -> false (*Never going to happen *) 
+    | Some piece -> 
+
+   let replace from game =  *)
+
+
 let win_condition game =
   (List.filter (fun p -> p.piece = King) game.board) |> List.length = 1 
