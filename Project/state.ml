@@ -16,10 +16,13 @@ type obj = string
 type piece = {
   piece : piece_name;
   color : color;
-  loc : int*int;
-  moves : (int*int) list;
+  loc : location;
+  first_moves : move list;
+  moves : move list;
+  attack_moves : move list;
   first_move : bool;
 }
+
 
 type t = {
   board : piece list;
@@ -66,7 +69,13 @@ let piece_of_json json = {
     | _ -> White (* bad *)
   end;
   loc = ((json |> member "col" |> to_int),(json |> member "row" |> to_int));
+  first_moves = (try (
+      json |> member "first_moves" |> to_list |> List.map moves_of_json
+    )  with e -> []);
   moves = (json |> member "moves" |> to_list |> List.map moves_of_json);
+  attack_moves = (try (
+      json |> member "attack_moves" |> to_list |> List.map moves_of_json
+    ) with e -> []);
   first_move = true;
 }
 
@@ -180,8 +189,12 @@ let is_valid_take obj1 obj2 from onto game =
     | None -> false (*Never going to happen *) 
     | Some piece -> begin
         match piece.color with
-        | White -> move_check_white piece.moves from onto
-        | Black -> move_check_black piece.moves from onto
+        | White -> if (piece.attack_moves = []) then (
+            move_check_white piece.moves from onto
+          ) else move_check_white piece.attack_moves from onto
+        | Black -> if (piece.attack_moves = []) then (
+            move_check_black piece.moves from onto
+          ) else move_check_black piece.attack_moves from onto
       end
   else false
 

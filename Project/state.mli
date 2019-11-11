@@ -22,7 +22,9 @@ type piece = {
   piece : piece_name;
   color : color;
   loc : location;
+  first_moves : move list;
   moves : move list;
+  attack_moves : move list;
   first_move : bool;
 }
 
