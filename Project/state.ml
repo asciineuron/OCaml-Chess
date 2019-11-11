@@ -84,6 +84,38 @@ let init_state json = {
   board_size = json |> member "size" |> to_int;
 }
 
+let piece_to_string p =
+  match p.piece with
+  | Pawn -> "pawn"
+  | Knight -> "knight"
+  | Bishop -> "bishop"
+  | Rook -> "rook"
+  | Queen -> "queen"
+  | King -> "king"
+
+let piece_type_to_string ptype =
+  match ptype with
+  | Pawn -> "pawn"
+  | Knight -> "knight"
+  | Bishop -> "bishop"
+  | Rook -> "rook"
+  | Queen -> "queen"
+  | King -> "king"
+
+let add_piece_of_json piece loc color json = {
+  piece = piece;
+  color = color;
+  loc = loc;
+  first_move = true;
+  first_moves = (List.find (fun json -> to_string (member "piece" json) = (piece_type_to_string piece))
+                   (json |> member "layout" |> to_list)) |> member "first_moves" |> to_list |> List.map moves_of_json;
+  moves = (List.find (fun json -> to_string (member "piece" json) = (piece_type_to_string piece))
+             (json |> member "layout" |> to_list)) |> member "moves" |> to_list |> List.map moves_of_json;
+  attack_moves = (List.find (fun json -> to_string (member "piece" json) = (piece_type_to_string piece))
+                    (json |> member "layout" |> to_list)) |> member "attack_moves" |> to_list |> List.map moves_of_json;
+}
+
+
 let string_to_piece string = 
   match string with
   | "pawn" -> Pawn
@@ -93,15 +125,6 @@ let string_to_piece string =
   | "queen" -> Queen
   | "king" -> King
   | _ -> failwith "This is not a valid piece"
-
-let piece_to_string p =
-  match p.piece with
-  | Pawn -> "pawn"
-  | Knight -> "knight"
-  | Bishop -> "bishop"
-  | Rook -> "rook"
-  | Queen -> "queen"
-  | King -> "king"
 
 let piece_color_to_string p =
   match p.color with
@@ -156,6 +179,7 @@ let move_check_black moves from onto =
 
 
 let is_valid_move obj from onto game color = 
+  (* checking color of selected piece matches game turn *)
   let from_piece = (get_piece from game) in
   if 
     match from_piece with
@@ -219,6 +243,20 @@ let take obj1 obj2 from onto game color =
                                  else p::acc) [] game.board
       })
   else Illegal
+
+(* let is_valid_replace from game =
+   let from_piece = (get_piece from game) in
+   if (from = (1,1) && (kind_of_piece from_piece = Pawn)) then 
+
+    print_endline "What piece would you like to replace the pawn with?";
+    print_string  "> ";
+    let s = string_to_piece (read_line ()) in
+    match from_piece with
+    | None -> false (*Never going to happen *) 
+    | Some piece -> 
+
+   let replace from game =  *)
+
 
 let win_condition game =
   (List.filter (fun p -> p.piece = King) game.board) |> List.length = 1 
