@@ -9,3 +9,14 @@ check
 check mate
 
 AI
+
+
+r {
+  s
+  A
+  a
+}
+
+{
+  r with sneha1 = r.s';//
+}
