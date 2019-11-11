@@ -23,6 +23,10 @@ let rec get_new_game d od =
     print_endline "\nThere was no game initialization JSON in this directory.\n";
     raise End_of_file (** LMAO COULDNT THINK OF ANYTHING*)
 
+let save_game name state =
+  let file = open_out (name^".txt") in
+  (Printf.fprintf file "%s") (json_of_board state)
+
 let rec check_directory directory = 
   try (
     let game = Unix.opendir directory in

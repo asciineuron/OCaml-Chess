@@ -71,6 +71,51 @@ let init_state json = {
   board_size = json |> member "size" |> to_int;
 }
 
+
+let string_to_piece string = 
+  match string with
+  | "pawn" -> Pawn
+  | "knight" -> Knight
+  | "bishop" -> Bishop
+  | "rook" -> Rook
+  | "queen" -> Queen
+  | "king" -> King
+  | _ -> Empty (* bad *)
+
+let piece_to_string p =
+  match p.piece with
+  | Pawn -> "pawn"
+  | Knight -> "knight"
+  | Bishop -> "bishop"
+  | Rook -> "rook"
+  | Queen -> "queen"
+  | King -> "king"
+  | Empty -> ""
+
+let piece_color_to_string p =
+  match p.color with
+  | Black -> "black"
+  | White -> "white"
+
+let json_of_piece p =
+  let moves = (List.fold_left (fun acc mov -> 
+      "{ \" x\": " ^ (string_of_int (fst mov)) ^ 
+      {|, "y": |} ^ (string_of_int (snd mov)) ^ "}," ^ acc) "" p.moves) in
+  {|
+{
+  "piece": |} ^ "\"" ^ piece_to_string p ^ "\"" ^ 
+  {|, "color" |} ^ "\"" ^ piece_color_to_string p ^ "\"" ^
+  {|, "col": |} ^ string_of_int (fst (p.loc)) ^ "\"" ^
+  {|, "row": |} ^ string_of_int (snd (p.loc)) ^ "\"" ^
+  {|, "moves": [|} ^ (String.sub moves 0 (String.length moves - 1)) ^ "}" ^
+  {| ]},
+  |}
+
+let json_of_board s =
+  let json_pieces = List.fold_left (fun acc p -> json_of_piece p) "" s.board in
+  let json_trimmed = String.sub json_pieces 0 (String.length json_pieces - 1) in
+  {| { "layout": [ |} ^ json_trimmed ^ {| ], "size": |} ^ string_of_int (s.board_size) ^ {|}|}
+
 let within_bounds onto game =
   snd onto < game.board_size && snd onto >= 0 &&
   fst onto < game.board_size && fst onto >= 0
@@ -164,16 +209,6 @@ let kind_of_piece piece_option =
   match piece_option with
   | None -> failwith "this cant happen"
   | Some piece -> piece.piece
-
-let string_to_piece string = 
-  match string with
-  | "pawn" -> Pawn
-  | "knight" -> Knight
-  | "bishop" -> Bishop
-  | "rook" -> Rook
-  | "queen" -> Queen
-  | "king" -> King
-  | _ -> Empty (* bad *)
 
 (* let print_tuples lst = 
    List.iter (fun x -> print_string ("("^(string_of_int (fst x)^","^(string_of_int(snd x))^") "))) lst *)

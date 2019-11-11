@@ -43,3 +43,7 @@ val win_condition : t -> bool
 val get_board_size : t -> int
 
 val kind_of_piece : piece option -> piece_name
+
+val json_of_piece : piece -> string
+
+val json_of_board : t -> string
