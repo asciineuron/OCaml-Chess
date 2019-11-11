@@ -1,16 +1,11 @@
-type location = (int*int)
-
-type obj = string
-
-type game = string
+open State
 
 type command = 
   | Move of (obj * location * location)
   | Quit
   | Save
-  (* | NewGame *)
-  (* | Load of game *)
-  | Replace of (obj*obj)
+  | Take of (obj * obj * location * location)
+  | Replace of obj
 
 exception Empty
 

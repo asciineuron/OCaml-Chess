@@ -24,7 +24,6 @@ let rec get_new_game d od =
     raise End_of_file (** LMAO COULDNT THINK OF ANYTHING*)
 
 let save_game name state directory =
-  let dir = Unix.opendir directory in
   let file = open_out (directory^Filename.dir_sep^name^".json") in
   (Printf.fprintf file "%s") (json_of_board state)
 
@@ -76,6 +75,13 @@ let rec play_the_rest state color directory =
       | State.Legal(s) -> play_the_rest s (other_color color) directory
     end
   | Quit -> Stdlib.exit 0
+  | Take (obj1, obj2, c1, c2) -> begin
+      match (State.take obj1 obj2 c1 c2 state) with
+      | State.Illegal ->
+        Stdlib.print_endline "Illegal Move!";
+        play_the_rest state directory;
+      | State.Legal(s) -> play_the_rest s directory end
+  | exception e -> Stdlib.print_endline "Illegal Command!";
   | Save -> 
     Stdlib.print_endline "enter save file name: ";
     let file = read_line() in

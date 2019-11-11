@@ -1,0 +1,11 @@
+first we need turns
+
+then we need first move, moving moves, take moves
+
+castle
+
+check
+
+check mate
+
+AI

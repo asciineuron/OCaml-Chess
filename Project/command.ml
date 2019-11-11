@@ -1,18 +1,13 @@
 open State
 
-type location = (int*int)
-
-type obj = string
-
 type game = string
 
 type command = 
   | Move of (obj * location * location)
   | Quit
   | Save
-  (* | NewGame *)
-  (* | Load of game *)
-  | Replace of (obj*obj)
+  | Take of (obj * obj * location * location)
+  | Replace of obj
 
 exception Empty
 
@@ -41,11 +36,9 @@ let parse string game =
   | "quit"::_ -> raise (Malformed "you did not enter a valid command")
   | "save"::"game"::[] -> Save
   | "save"::_ -> raise (Malformed "you did not enter a valid command")
-  (* | "new"::"game"::[] -> NewGame
-     | "new"::"game"::_ -> raise (Malformed "you did not enter a valid command") *)
-  (* | "load"::json_file::[] -> Load json_file
-     | "load"::_ -> raise (Malformed "you did not enter a valid command") *)
-  | "replace"::obj1::"with"::obj2::[] -> Replace (obj1,obj2)
+  | "take"::obj1::"on"::loc1::"with"::obj2::"on"::loc2::[] ->
+    Take (obj2, obj1, coordinate (explode loc2) game, coordinate (explode loc1) game)
+  | "replace"::"pawn"::"with"::obj::[] -> Replace obj
   | "replace"::_ -> raise (Malformed  "you did not enter a valid command")
   | "move"::obj::"from"::loc1::"to"::loc2::[] -> 
     Move (obj, coordinate (explode loc1) game, coordinate (explode loc2) game)

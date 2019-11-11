@@ -7,16 +7,22 @@
 
 exception IllegalPosition
 
-type piece_name =  Knight | Pawn | Bishop | Rook | Queen | King | Empty
+type piece_name =  Knight | Pawn | Bishop | Rook | Queen | King
+
 type color = Black | White
+
+type location = (int*int)
+
+type move = (int*int)
+
+type obj = string
 
 (* NOTE: moves given "e5" thus loc = col*row !!*)
 type piece = {
   piece : piece_name;
   color : color;
-  loc : int*int;
-  moves : (int*int) list;
-  alive : bool;
+  loc : location;
+  moves : move list;
   first_move : bool;
 }
 
@@ -28,15 +34,17 @@ type t = {
 (* will have json for initial layout and loading a save *)
 val init_state : Yojson.Basic.t -> t
 
-val get_piece : (int*int) -> t -> piece option
+val get_piece : location -> t -> piece option
 
 type result = Legal of t | Illegal
 
 (* checks for piece at this location, sees if valid movement*)
-val is_valid_move : string -> (int*int) -> (int*int) -> t -> bool
+val is_valid_move : obj -> location -> location -> t -> bool
 
 (* enacts move for board *)
-val move : string -> (int*int) -> (int*int) -> t -> result
+val take : obj -> obj -> location -> location -> t -> result
+
+val move : obj -> location -> location -> t -> result
 
 val win_condition : t -> bool
 

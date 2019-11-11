@@ -2,8 +2,15 @@ open Yojson.Basic.Util
 
 exception IllegalPosition
 
-type piece_name =  Knight | Pawn | Bishop | Rook | Queen | King | Empty
+type piece_name =  Knight | Pawn | Bishop | Rook | Queen | King
+
 type color = Black | White
+
+type location = (int*int)
+
+type move = (int*int)
+
+type obj = string
 
 (* NOTE: moves given "e5" thus loc = col*row !!*)
 type piece = {
@@ -11,7 +18,6 @@ type piece = {
   color : color;
   loc : int*int;
   moves : (int*int) list;
-  alive : bool;
   first_move : bool;
 }
 
@@ -21,7 +27,7 @@ type t = {
 }
 
 let get_piece pos game = 
-  match List.find (fun piece -> piece.loc = pos && piece.alive) game.board with
+  match List.find (fun piece -> piece.loc = pos) game.board with
   | exception (Not_found) -> None
   | a -> Some a
 
@@ -38,7 +44,6 @@ let points_of_piece piece_name =
   | Rook -> 5
   | Queen -> 9
   | King -> 10
-  | Empty -> 0
 
 let moves_of_json json = 
   ((json |> member "x" |> to_int), (json |> member "y" |> to_int))
@@ -52,7 +57,7 @@ let piece_of_json json = {
     | "rook" -> Rook
     | "queen" -> Queen
     | "king" -> King
-    | _ -> Empty (* bad *)
+    | _ -> failwith "This is not a valid JSON. Edit it to the correct format." (* bad *)
   end;
   color = begin
     match json |> member "color" |> to_string with
@@ -62,7 +67,6 @@ let piece_of_json json = {
   end;
   loc = ((json |> member "col" |> to_int),(json |> member "row" |> to_int));
   moves = (json |> member "moves" |> to_list |> List.map moves_of_json);
-  alive = true;
   first_move = true;
 }
 
@@ -80,7 +84,7 @@ let string_to_piece string =
   | "rook" -> Rook
   | "queen" -> Queen
   | "king" -> King
-  | _ -> Empty (* bad *)
+  | _ -> failwith "This is not a valid piece"
 
 let piece_to_string p =
   match p.piece with
@@ -90,7 +94,6 @@ let piece_to_string p =
   | Rook -> "rook"
   | Queen -> "queen"
   | King -> "king"
-  | Empty -> ""
 
 let piece_color_to_string p =
   match p.color with
@@ -123,9 +126,6 @@ let kind_of_piece piece_option =
   match piece_option with
   | None -> failwith "this cant happen"
   | Some piece -> piece.piece
-
-(* let print_tuples lst = 
-   List.iter (fun x -> print_string ("("^(string_of_int (fst x)^","^(string_of_int(snd x))^") "))) lst *)
 
 let move_check_white moves from onto = 
   let delta_x = (fst onto) - (fst from) in
@@ -165,8 +165,35 @@ let move obj from onto game =
       {
         game with
         board = (game.board) 
-                |> List.map (fun p -> if p.loc = from && p.alive then
+                |> List.map (fun p -> if p.loc = from then
                                 {p with loc = onto} else p)
+      })
+  else Illegal
+
+let is_valid_take obj1 obj2 from onto game = 
+  let from_piece = (get_piece from game) in
+  let onto_piece = (get_piece onto game) in 
+  if (kind_of_piece from_piece = string_to_piece obj1 &&
+      kind_of_piece onto_piece = string_to_piece obj2 &&
+      (get_piece onto game) != None) then 
+    match from_piece with
+    | None -> false (*Never going to happen *) 
+    | Some piece -> begin
+        match piece.color with
+        | White -> move_check_white piece.moves from onto
+        | Black -> move_check_black piece.moves from onto
+      end
+  else false
+
+let take obj1 obj2 from onto game = 
+  if is_valid_take obj1 obj2 from onto game then 
+    Legal(
+      {
+        game with
+        board = List.fold_left (fun acc p -> if p.loc = from then 
+                                   {p with loc = onto}::acc 
+                                 else if p.loc = onto then acc
+                                 else p::acc) [] game.board
       })
   else Illegal
 
