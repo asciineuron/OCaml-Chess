@@ -23,8 +23,9 @@ let rec get_new_game d od =
     print_endline "\nThere was no game initialization JSON in this directory.\n";
     raise End_of_file (** LMAO COULDNT THINK OF ANYTHING*)
 
-let save_game name state =
-  let file = open_out (name^".txt") in
+let save_game name state directory =
+  let dir = Unix.opendir directory in
+  let file = open_out (directory^Filename.dir_sep^name^".json") in
   (Printf.fprintf file "%s") (json_of_board state)
 
 let rec check_directory directory = 
@@ -57,7 +58,7 @@ let rec check_directory directory =
     match read_line () with
     | file_name -> check_directory file_name
 
-let rec play_the_rest state = 
+let rec play_the_rest state directory = 
   Interface.print_board state;
   print_endline "Please enter a command";
   let input = Stdlib.read_line() in
@@ -66,16 +67,20 @@ let rec play_the_rest state =
       match (State.move obj c1 c2 state) with
       | State.Illegal ->
         Stdlib.print_endline "Illegal Move!";
-        play_the_rest state;
-      | State.Legal(s) -> play_the_rest s
+        play_the_rest state directory;
+      | State.Legal(s) -> play_the_rest s directory
     end
   | Quit -> Stdlib.exit 0
-  | _ -> play_the_rest state
+  | Save -> 
+    Stdlib.print_endline "enter save file name: ";
+    let file = read_line() in
+    save_game file state directory
+  | _ -> play_the_rest state directory
 
 
 let play_game directory = 
   let start = check_directory directory in 
-  play_the_rest start
+  play_the_rest start directory
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =

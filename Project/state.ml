@@ -99,20 +99,19 @@ let piece_color_to_string p =
 
 let json_of_piece p =
   let moves = (List.fold_left (fun acc mov -> 
-      "{ \" x\": " ^ (string_of_int (fst mov)) ^ 
+      "{ \"x\": " ^ (string_of_int (fst mov)) ^ 
       {|, "y": |} ^ (string_of_int (snd mov)) ^ "}," ^ acc) "" p.moves) in
   {|
 {
   "piece": |} ^ "\"" ^ piece_to_string p ^ "\"" ^ 
-  {|, "color" |} ^ "\"" ^ piece_color_to_string p ^ "\"" ^
-  {|, "col": |} ^ string_of_int (fst (p.loc)) ^ "\"" ^
-  {|, "row": |} ^ string_of_int (snd (p.loc)) ^ "\"" ^
-  {|, "moves": [|} ^ (String.sub moves 0 (String.length moves - 1)) ^ "}" ^
-  {| ]},
-  |}
+  {|, "color": |} ^ "\"" ^ piece_color_to_string p ^ "\"" ^
+  {|, "col": |} ^ string_of_int (fst (p.loc)) ^
+  {|, "row": |} ^ string_of_int (snd (p.loc)) ^
+  {|, "moves": [|} ^ (String.sub moves 0 (String.length moves - 1)) ^
+  {| ]},|}
 
 let json_of_board s =
-  let json_pieces = List.fold_left (fun acc p -> json_of_piece p) "" s.board in
+  let json_pieces = List.fold_left (fun acc p -> json_of_piece p^acc) "" s.board in
   let json_trimmed = String.sub json_pieces 0 (String.length json_pieces - 1) in
   {| { "layout": [ |} ^ json_trimmed ^ {| ], "size": |} ^ string_of_int (s.board_size) ^ {|}|}
 
