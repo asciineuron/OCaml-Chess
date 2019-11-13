@@ -76,25 +76,29 @@ Commands:
 - replace pawn with "piece"
 |}
 
-let rec play_the_rest state (directory:string) = 
+let move_function state directory obj c1 c2 = 
+  match (State.move obj c1 c2 state) with
+  | State.Illegal ->
+    Stdlib.print_endline "Illegal Move!";
+    state
+  | State.Legal(s) -> {s with turn = (other_color state.turn)}
+
+let take_function state directory obj1 obj2 c1 c2 = 
+  match (State.take obj1 obj2 c1 c2 state) with
+  | State.Illegal ->
+    Stdlib.print_endline "Illegal Move!";
+    state
+  | State.Legal(s) -> {s with turn = (other_color state.turn)}
+
+let rec play_the_rest state directory = 
   Interface.print_board state;
   let turn = HumPlayer.turn state in
   match (Command.parse turn state) with
-  | Move(obj,c1, c2) -> begin
-      match (State.move obj c1 c2 state) with
-      | State.Illegal ->
-        Stdlib.print_endline "Illegal Move!";
-        play_the_rest state directory;
-      | State.Legal(s) -> play_the_rest {s with turn = (other_color state.turn)} directory
-    end
+  | Move(obj,c1, c2) -> 
+    play_the_rest (move_function state directory obj c1 c2) directory
   | Quit -> Stdlib.exit 0
-  | Take (obj1, obj2, c1, c2) -> begin
-      match (State.take obj1 obj2 c1 c2 state) with
-      | State.Illegal ->
-        Stdlib.print_endline "Illegal Move!";
-        play_the_rest state directory;
-      | State.Legal(s) -> play_the_rest {s with turn = (other_color state.turn)} directory 
-    end
+  | Take (obj1, obj2, c1, c2) -> 
+    play_the_rest (take_function state directory obj1 obj2 c1 c2) directory
   | exception e -> Stdlib.print_endline "Illegal Command!";
   | Save -> 
     Stdlib.print_endline "enter save file name: ";

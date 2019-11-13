@@ -197,9 +197,13 @@ let is_valid_move obj from onto game =
     | None -> false (*Never going to happen *) 
     | Some piece -> begin
         match piece.color, piece.first_move with
-        | White, true -> move_check_white piece.first_moves from onto
+        | White, true -> if (piece.first_moves <> []) then 
+            move_check_white piece.first_moves from onto
+          else move_check_white piece.moves from onto
         | White, false -> move_check_white piece.moves from onto
-        | Black, true -> move_check_black piece.first_moves from onto
+        | Black, true -> if (piece.first_moves <> []) then 
+            move_check_black piece.first_moves from onto
+          else move_check_black piece.moves from onto
         | Black, false -> move_check_black piece.moves from onto
       end
   else false
