@@ -70,18 +70,20 @@ let move_function state color directory obj c1 c2 =
     state
   | State.Legal(s) -> s
 
+let take_function state color directory obj1 obj2 c1 c2 = 
+  match (State.take obj1 obj2 c1 c2 state color) with
+  | State.Illegal ->
+    Stdlib.print_endline "Illegal Move!";
+    state
+  | State.Legal(s) -> s
+
 let rec play_the_rest state color directory = 
   Interface.print_board state;
   let turn = HumPlayer.turn state color in
   match (Command.parse turn state) with
   | Move(obj,c1, c2) -> play_the_rest (move_function state color directory obj c1 c2) color directory
   | Quit -> Stdlib.exit 0
-  | Take (obj1, obj2, c1, c2) -> begin
-      match (State.take obj1 obj2 c1 c2 state color) with
-      | State.Illegal ->
-        Stdlib.print_endline "Illegal Move!";
-        play_the_rest state color directory;
-      | State.Legal(s) -> play_the_rest s (other_color color) directory end
+  | Take (obj1, obj2, c1, c2) -> play_the_rest (take_function state color directory obj1 obj2 c1 c2) color directory
   | exception e -> Stdlib.print_endline "Illegal Command!";
   | Save -> 
     Stdlib.print_endline "enter save file name: ";
