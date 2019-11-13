@@ -1,1 +1,1 @@
-val turn : State.t -> State.color -> string
+val turn : State.t -> string

@@ -27,6 +27,8 @@ type piece = {
 type t = {
   board : piece list;
   board_size : int;
+  turn : color;
+  description : Yojson.Basic.t;
 }
 
 let get_piece pos game = 
@@ -82,6 +84,8 @@ let piece_of_json json = {
 let init_state json = {
   board = json |> member "layout" |> to_list |> List.map piece_of_json;
   board_size = json |> member "size" |> to_int;
+  turn = White;
+  description = json;
 }
 
 let piece_to_string p =
@@ -178,13 +182,13 @@ let move_check_black moves from onto =
   | h::t -> print_endline "\n You did not give it a valid JSON file"; exit 0
 
 
-let is_valid_move obj from onto game color = 
+let is_valid_move obj from onto game = 
   (* checking color of selected piece matches game turn *)
   let from_piece = (get_piece from game) in
   if 
     match from_piece with
-    | Some a -> a.color <> color
-    | None -> false
+    | Some a -> a.color <> game.turn
+    | None -> true
   then false
   else
   if (kind_of_piece (from_piece) = (string_to_piece obj) && (get_piece onto game) = None) then 
@@ -199,8 +203,8 @@ let is_valid_move obj from onto game color =
       end
   else false
 
-let move obj from onto game color =
-  if is_valid_move obj from onto game color then 
+let move obj from onto game =
+  if is_valid_move obj from onto game then 
     Legal(
       {
         game with
@@ -210,11 +214,11 @@ let move obj from onto game color =
       })
   else Illegal
 
-let is_valid_take obj1 obj2 from onto game color = 
+let is_valid_take obj1 obj2 from onto game = 
   let from_piece = (get_piece from game) in
   let onto_piece = (get_piece onto game) in 
   if match from_piece, onto_piece with
-    | Some a, Some b -> a.color <> color || b.color = color
+    | Some a, Some b -> a.color <> game.turn || b.color = game.turn
     | _ -> false
   then false
   else
@@ -234,8 +238,8 @@ let is_valid_take obj1 obj2 from onto game color =
       end
   else false
 
-let take obj1 obj2 from onto game color = 
-  if is_valid_take obj1 obj2 from onto game color then 
+let take obj1 obj2 from onto game = 
+  if is_valid_take obj1 obj2 from onto game then 
     Legal(
       {
         game with
