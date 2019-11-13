@@ -210,7 +210,7 @@ let move obj from onto game =
         game with
         board = (game.board) 
                 |> List.map (fun p -> if p.loc = from then
-                                {p with loc = onto} else p)
+                                {p with loc = onto; first_move = false} else p)
       })
   else Illegal
 
