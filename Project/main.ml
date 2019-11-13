@@ -63,17 +63,18 @@ let other_color c =
   | State.Black -> State.White
   | State.White -> State.Black
 
-let rec play_the_rest state color (directory:string) = 
+let move_function state color directory obj c1 c2 = 
+  match (State.move obj c1 c2 state color) with
+  | State.Illegal ->
+    Stdlib.print_endline "Illegal Move!";
+    state
+  | State.Legal(s) -> s
+
+let rec play_the_rest state color directory = 
   Interface.print_board state;
   let turn = HumPlayer.turn state color in
   match (Command.parse turn state) with
-  | Move(obj,c1, c2) -> begin
-      match (State.move obj c1 c2 state color) with
-      | State.Illegal ->
-        Stdlib.print_endline "Illegal Move!";
-        play_the_rest state color directory;
-      | State.Legal(s) -> play_the_rest s (other_color color) directory
-    end
+  | Move(obj,c1, c2) -> play_the_rest (move_function state color directory obj c1 c2) color directory
   | Quit -> Stdlib.exit 0
   | Take (obj1, obj2, c1, c2) -> begin
       match (State.take obj1 obj2 c1 c2 state color) with
