@@ -63,38 +63,40 @@ let other_color c =
   | State.Black -> State.White
   | State.White -> State.Black
 
-let move_function state color directory obj c1 c2 = 
-  match (State.move obj c1 c2 state color) with
+let move_function state directory obj c1 c2 = 
+  match (State.move obj c1 c2 state) with
   | State.Illegal ->
     Stdlib.print_endline "Illegal Move!";
     state
-  | State.Legal(s) -> s
+  | State.Legal(s) -> {s with turn = (other_color state.turn)}
 
-let take_function state color directory obj1 obj2 c1 c2 = 
-  match (State.take obj1 obj2 c1 c2 state color) with
+let take_function state directory obj1 obj2 c1 c2 = 
+  match (State.take obj1 obj2 c1 c2 state) with
   | State.Illegal ->
     Stdlib.print_endline "Illegal Move!";
     state
-  | State.Legal(s) -> s
+  | State.Legal(s) -> {s with turn = (other_color state.turn)}
 
-let rec play_the_rest state color directory = 
+let rec play_the_rest state directory = 
   Interface.print_board state;
-  let turn = HumPlayer.turn state color in
+  let turn = HumPlayer.turn state in
   match (Command.parse turn state) with
-  | Move(obj,c1, c2) -> play_the_rest (move_function state color directory obj c1 c2) color directory
+  | Move(obj,c1, c2) -> 
+    play_the_rest (move_function state directory obj c1 c2) directory
   | Quit -> Stdlib.exit 0
-  | Take (obj1, obj2, c1, c2) -> play_the_rest (take_function state color directory obj1 obj2 c1 c2) color directory
+  | Take (obj1, obj2, c1, c2) -> 
+    play_the_rest (take_function state directory obj1 obj2 c1 c2) directory
   | exception e -> Stdlib.print_endline "Illegal Command!";
   | Save -> 
     Stdlib.print_endline "enter save file name: ";
     let file = read_line() in
     save_game file state directory
-  | _ -> play_the_rest state color directory
+  | _ -> play_the_rest state directory
 
 
 let play_game directory = 
   let start = check_directory directory in 
-  play_the_rest start (State.White) directory
+  play_the_rest start directory
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
