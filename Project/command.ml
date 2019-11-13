@@ -8,6 +8,7 @@ type command =
   | Save
   | Take of (obj * obj * location * location)
   | Replace of obj
+  | Help
 
 exception Empty
 
@@ -42,4 +43,6 @@ let parse string game =
   | "replace"::_ -> raise (Malformed  "you did not enter a valid command")
   | "move"::obj::"from"::loc1::"to"::loc2::[] -> 
     Move (obj, coordinate (explode loc1) game, coordinate (explode loc2) game)
+  | "help"::[] -> Help
+  | "help"::_ -> raise (Malformed "you did not enter a valid command")
   | _ -> raise (Malformed "you did not enter a valid command")

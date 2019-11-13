@@ -63,6 +63,19 @@ let other_color c =
   | State.Black -> State.White
   | State.White -> State.Black
 
+let print_help = 
+  {|
+---HELP---
+
+Position Format: rowcol e.g. e2, d5, etc.
+
+Commands:
+- move "piece" from "start_position" to "end_position"
+- quit game
+- take "piece_1" on "position_1" with "piece_1" on "position_2"
+- replace pawn with "piece"
+|}
+
 let rec play_the_rest state (directory:string) = 
   Interface.print_board state;
   let turn = HumPlayer.turn state in
@@ -87,6 +100,9 @@ let rec play_the_rest state (directory:string) =
     Stdlib.print_endline "enter save file name: ";
     let file = read_line() in
     save_game file state directory
+  | Help ->
+    print_endline print_help;
+    play_the_rest state directory;
   | _ -> play_the_rest state directory
 
 

@@ -63,3 +63,5 @@ val json_of_piece : piece -> string
 val json_of_board : t -> string
 
 val piece_color_to_string : piece -> string
+
+val piece_move_options : piece -> t -> location list

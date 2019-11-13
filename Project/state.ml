@@ -184,6 +184,7 @@ let move_check_black moves from onto =
 
 let is_valid_move obj from onto game = 
   (* checking color of selected piece matches game turn *)
+  print_endline "BB";
   let from_piece = (get_piece from game) in
   if 
     match from_piece with
@@ -249,6 +250,34 @@ let take obj1 obj2 from onto game =
                                  else p::acc) [] game.board
       })
   else Illegal
+
+let is_valid_take_no_type from onto game = 
+  let from_piece = (get_piece from game) in
+  let onto_piece = (get_piece onto game) in 
+  if match from_piece, onto_piece with
+    | Some a, Some b -> a.color <> game.turn || b.color = game.turn
+    | _ -> false
+  then false
+  else
+    match from_piece with
+    | None -> false (*Never going to happen *) 
+    | Some piece -> begin
+        match piece.color with
+        | White -> if (piece.attack_moves = []) then (
+            move_check_white piece.moves from onto
+          ) else move_check_white piece.attack_moves from onto
+        | Black -> if (piece.attack_moves = []) then (
+            move_check_black piece.moves from onto
+          ) else move_check_black piece.attack_moves from onto
+      end
+
+let piece_move_options piece game =
+  let moves = List.fold_left (fun acc mov -> if is_valid_move (piece_to_string(piece)) piece.loc ((fst mov) + (fst piece.loc), (snd mov) + (snd piece.loc)) game 
+                               then ((fst mov) + (fst piece.loc), (snd mov) + (snd piece.loc))::acc else acc) [] piece.moves in
+  let atck_moves = List.fold_left (fun acc mov -> 
+      if is_valid_take_no_type piece.loc ((fst mov) + (fst piece.loc), (snd mov) + (snd piece.loc)) game 
+      then ((fst mov) + (fst piece.loc), (snd mov) + (snd piece.loc))::acc else acc) [] piece.attack_moves in
+  moves@atck_moves
 
 (* let is_valid_replace from game =
    let from_piece = (get_piece from game) in

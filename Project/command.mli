@@ -6,6 +6,7 @@ type command =
   | Save
   | Take of (obj * obj * location * location)
   | Replace of obj
+  | Help
 
 exception Empty
 
